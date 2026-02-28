@@ -1,0 +1,93 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-emerald: #1A4D2E;
+  --color-brand-gold: #D4A017;
+  --color-brand-slate: #F8F9FA;
+
+  --font-heading: "Outfit", sans-serif;
+  --font-body: "Inter", sans-serif;
+}
+
+:root {
+  font-family: var(--font-body);
+  background-color: var(--color-brand-slate);
+  color: #1a1a1a;
+}
+
+body {
+  margin: 0;
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+}
+
+@utility glass-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background-color: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  border-bottom-width: 1px;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+@utility premium-btn {
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-radius: 9999px;
+  font-weight: 500;
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+  cursor: pointer;
+}
+
+.premium-btn:hover {
+  transform: scale(1.05);
+}
+
+.premium-btn:active {
+  transform: scale(0.95);
+}
+
+@utility emerald-btn {
+  @apply premium-btn;
+  background-color: var(--color-brand-emerald);
+  color: white;
+}
+
+.emerald-btn:hover {
+  background-color: #153d24;
+}
+
+@utility gold-btn {
+  @apply premium-btn;
+  background-color: var(--color-brand-gold);
+  color: white;
+}
+
+.gold-btn:hover {
+  background-color: #b08513;
+}
+
+@utility premium-glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+@utility text-gradient {
+  background: linear-gradient(135deg, var(--color-brand-emerald), var(--color-brand-gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
