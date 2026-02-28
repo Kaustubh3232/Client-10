@@ -28,7 +28,7 @@ function App() {
             <Route path="/gallery" element={<><Navbar /><main className="flex-grow"><Gallery /></main><Footer /></>} />
             <Route path="/contact" element={<><Navbar /><main className="flex-grow"><Contact /></main><Footer /></>} />
             <Route path="/public-disclosure" element={<><Navbar /><main className="flex-grow"><PublicDisclosure /></main><Footer /></>} />
-            <Route path="/admin" element={<><Navbar /><main className="flex-grow"><Admin /></main><Footer /></>} />
+            <Route path="/admin/*" element={<><Navbar /><main className="flex-grow"><Admin /></main><Footer /></>} />
 
             {/* Protected Admin Routes - No global Navbar/Footer */}
             <Route
