@@ -21,11 +21,18 @@ export const uploadGalleryImage = async (file, title, category) => {
     const filePath = `gallery/${fileName}`;
 
     // 1. Upload to Storage
-    const { error: uploadError } = await supabase.storage
-        .from('assets')
-        .upload(filePath, file, { cacheControl: '3600', upsert: true });
+    let uploadError = null;
+    try {
+        const result = await supabase.storage
+            .from('assets')
+            .upload(filePath, file, { cacheControl: '3600', upsert: true });
+        uploadError = result.error;
+    } catch (err) {
+        console.error("Network/Storage Error:", err);
+        throw new Error(`Upload network error: ${err.message}. Check Supabase Storage RLS policies.`);
+    }
 
-    if (uploadError) throw uploadError;
+    if (uploadError) throw new Error(`Supabase Storage Error: ${uploadError.message}`);
 
     // 2. Get Public URL
     const { data: { publicUrl } } = supabase.storage
@@ -80,11 +87,18 @@ export const uploadTopperImage = async (file) => {
     const fileName = `${Date.now()}-${cleanName}`;
     const filePath = `toppers/${fileName}`;
 
-    const { error: uploadError } = await supabase.storage
-        .from('assets')
-        .upload(filePath, file, { cacheControl: '3600', upsert: true });
+    let uploadError = null;
+    try {
+        const result = await supabase.storage
+            .from('assets')
+            .upload(filePath, file, { cacheControl: '3600', upsert: true });
+        uploadError = result.error;
+    } catch (err) {
+        console.error("Network/Storage Error:", err);
+        throw new Error(`Upload network error: ${err.message}. Check Supabase Storage RLS policies.`);
+    }
 
-    if (uploadError) throw uploadError;
+    if (uploadError) throw new Error(`Supabase Storage Error: ${uploadError.message}`);
 
     const { data: { publicUrl } } = supabase.storage
         .from('assets')
@@ -199,11 +213,18 @@ export const uploadMediaImage = async (file, title) => {
     const filePath = `media/${fileName}`;
 
     // 1. Upload to Storage
-    const { error: uploadError } = await supabase.storage
-        .from('assets')
-        .upload(filePath, file, { cacheControl: '3600', upsert: true });
+    let uploadError = null;
+    try {
+        const result = await supabase.storage
+            .from('assets')
+            .upload(filePath, file, { cacheControl: '3600', upsert: true });
+        uploadError = result.error;
+    } catch (err) {
+        console.error("Network/Storage Error:", err);
+        throw new Error(`Upload network error: ${err.message}. Check Supabase Storage RLS policies.`);
+    }
 
-    if (uploadError) throw uploadError;
+    if (uploadError) throw new Error(`Supabase Storage Error: ${uploadError.message}`);
 
     // 2. Get Public URL
     const { data: { publicUrl } } = supabase.storage
