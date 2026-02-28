@@ -1,4 +1,4 @@
-import { SignIn, useUser, ClerkLoaded, ClerkLoading } from "@clerk/clerk-react";
+import { SignIn, useUser } from "@clerk/clerk-react";
 import { motion } from 'framer-motion';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -13,6 +13,20 @@ const Admin = () => {
             navigate('/admin/dashboard');
         }
     }, [isSignedIn, isLoaded, navigate]);
+
+    const SignInSkeleton = (
+        <div className="w-full bg-white rounded-[2.5rem] shadow-2xl p-10 flex flex-col items-center justify-center min-h-[400px] border border-gray-100 mb-8">
+            <Loader2 className="w-12 h-12 text-[#064e3b] animate-spin mb-6" />
+            <div className="h-4 w-3/4 bg-gray-100 rounded-full animate-pulse mb-3" />
+            <div className="h-3 w-1/2 bg-gray-50 rounded-full animate-pulse" />
+
+            <div className="w-full space-y-4 mt-10">
+                <div className="h-12 w-full bg-gray-50 rounded-xl animate-pulse" />
+                <div className="h-12 w-full bg-gray-50 rounded-xl animate-pulse" />
+                <div className="h-12 w-full bg-[#064e3b]/10 rounded-xl animate-pulse mt-6" />
+            </div>
+        </div>
+    );
 
     return (
         <div className="min-h-[90vh] flex flex-col items-center justify-center bg-gray-50 px-4 py-12 relative overflow-hidden">
@@ -33,47 +47,26 @@ const Admin = () => {
             </motion.div>
 
             <div className="relative z-10 w-full max-w-[400px]">
-                <ClerkLoading>
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        className="w-full bg-white rounded-[2.5rem] shadow-2xl p-10 flex flex-col items-center justify-center min-h-[400px] border border-gray-100"
-                    >
-                        <Loader2 className="w-12 h-12 text-[#064e3b] animate-spin mb-6" />
-                        <div className="h-4 w-3/4 bg-gray-100 rounded-full animate-pulse mb-3" />
-                        <div className="h-3 w-1/2 bg-gray-50 rounded-full animate-pulse" />
-
-                        <div className="w-full space-y-4 mt-10">
-                            <div className="h-12 w-full bg-gray-50 rounded-xl animate-pulse" />
-                            <div className="h-12 w-full bg-gray-50 rounded-xl animate-pulse" />
-                            <div className="h-12 w-full bg-[#064e3b]/10 rounded-xl animate-pulse mt-6" />
-                        </div>
-                    </motion.div>
-                </ClerkLoading>
-
-                <ClerkLoaded>
-                    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-                        <SignIn
-                            appearance={{
-                                elements: {
-                                    formButtonPrimary: 'w-full py-4 !bg-[#064e3b] hover:!bg-[#043326] !shadow-xl !shadow-emerald-900/20 !rounded-xl !text-sm !font-black !tracking-widest !uppercase transition-all',
-                                    card: '!bg-white !shadow-2xl !shadow-black/5 !rounded-[2.5rem] !border !border-gray-100 !p-8',
-                                    headerTitle: '!text-2xl !font-black !text-gray-900 !tracking-tight',
-                                    headerSubtitle: '!text-gray-500 !text-sm',
-                                    socialButtonsBlockButton: '!rounded-xl !border-gray-200 hover:!bg-gray-50',
-                                    formFieldInput: '!rounded-xl !border-gray-200 !p-3 focus:!border-[#064e3b] focus:!ring-[#064e3b]/20',
-                                    formFieldLabel: '!text-gray-600 !font-bold !text-xs',
-                                    footerActionLink: '!text-[#064e3b] hover:!text-[#043326] !font-bold',
-                                    identityPreviewEditButton: '!text-[#064e3b]'
-                                }
-                            }}
-                            routing="path"
-                            path="/admin"
-                            signUpUrl="/admin/sign-up"
-                            forceRedirectUrl="/admin/dashboard"
-                        />
-                    </motion.div>
-                </ClerkLoaded>
+                <SignIn
+                    fallback={SignInSkeleton}
+                    appearance={{
+                        elements: {
+                            formButtonPrimary: 'w-full py-4 !bg-[#064e3b] hover:!bg-[#043326] !shadow-xl !shadow-emerald-900/20 !rounded-xl !text-sm !font-black !tracking-widest !uppercase transition-all',
+                            card: '!bg-white !shadow-2xl !shadow-black/5 !rounded-[2.5rem] !border !border-gray-100 !p-8',
+                            headerTitle: '!text-2xl !font-black !text-gray-900 !tracking-tight',
+                            headerSubtitle: '!text-gray-500 !text-sm',
+                            socialButtonsBlockButton: '!rounded-xl !border-gray-200 hover:!bg-gray-50',
+                            formFieldInput: '!rounded-xl !border-gray-200 !p-3 focus:!border-[#064e3b] focus:!ring-[#064e3b]/20',
+                            formFieldLabel: '!text-gray-600 !font-bold !text-xs',
+                            footerActionLink: '!text-[#064e3b] hover:!text-[#043326] !font-bold',
+                            identityPreviewEditButton: '!text-[#064e3b]'
+                        }
+                    }}
+                    routing="path"
+                    path="/admin"
+                    signUpUrl="/admin/sign-up"
+                    forceRedirectUrl="/admin/dashboard"
+                />
             </div>
         </div>
     );
