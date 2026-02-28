@@ -14,6 +14,7 @@ export const getGalleryImages = async () => {
 };
 
 export const uploadGalleryImage = async (file, title, category) => {
+    if (!file) throw new Error("Please select an image file to upload.");
     const fileExt = file.name.split('.').pop();
     const cleanName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '');
     const fileName = `${Date.now()}-${cleanName}`;
@@ -73,6 +74,7 @@ export const getToppers = async () => {
 };
 
 export const uploadTopperImage = async (file) => {
+    if (!file) throw new Error("Please select a student photo to upload.");
     const fileExt = file.name.split('.').pop();
     const cleanName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '');
     const fileName = `${Date.now()}-${cleanName}`;
@@ -190,6 +192,7 @@ export const getMediaCoverage = async () => {
 };
 
 export const uploadMediaImage = async (file, title) => {
+    if (!file) throw new Error("Please select a media image to upload.");
     const fileExt = file.name.split('.').pop();
     const cleanName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '');
     const fileName = `${Date.now()}-${cleanName}`;
