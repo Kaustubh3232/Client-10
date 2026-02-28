@@ -134,7 +134,7 @@ const AdminDashboard = () => {
 
     const handleAdd = () => {
         if (activeTab === 'toppers') {
-            setFormData({ name: '', score: '', image: '' });
+            setFormData({ name: '', score: '', file: null });
             setShowModal(true);
         } else if (activeTab === 'notices') {
             setFormData({ title: '', description: '', date: new Date().toISOString().split('T')[0] });
@@ -153,19 +153,23 @@ const AdminDashboard = () => {
         setLoading(true);
         try {
             if (activeTab === 'toppers') {
-                await addTopper(formData.name, formData.score, formData.image);
+                await addTopper(formData.name, formData.score, formData.file);
+                setStats(prev => ({ ...prev, toppers: prev.toppers + 1 }));
             } else if (activeTab === 'notices') {
                 await addNotice(formData.title, formData.description, formData.date);
+                setStats(prev => ({ ...prev, notices: prev.notices + 1 }));
             } else if (activeTab === 'links') {
                 await addLink(formData.label, formData.url);
+                setStats(prev => ({ ...prev, links: prev.links + 1 }));
             } else if (activeTab === 'media') {
                 await uploadMediaImage(formData.file, formData.title);
+                setStats(prev => ({ ...prev, media: prev.media + 1 }));
             } else if (activeTab === 'gallery') {
                 await uploadGalleryImage(formData.file, formData.title, formData.category);
+                setStats(prev => ({ ...prev, gallery: prev.gallery + 1 }));
             }
             setShowModal(false);
             fetchData(true);
-            fetchStats();
         } catch (err) {
             alert(err.message);
         } finally {
@@ -188,17 +192,21 @@ const AdminDashboard = () => {
                 const urlParts = extra.split('/');
                 const fileName = urlParts[urlParts.length - 1];
                 await deleteGalleryImage(id, `gallery/${fileName}`);
+                setStats(prev => ({ ...prev, gallery: Math.max(0, prev.gallery - 1) }));
             } else if (activeTab === 'toppers') {
                 await deleteTopper(id);
+                setStats(prev => ({ ...prev, toppers: Math.max(0, prev.toppers - 1) }));
             } else if (activeTab === 'notices') {
                 await deleteNotice(id);
+                setStats(prev => ({ ...prev, notices: Math.max(0, prev.notices - 1) }));
             } else if (activeTab === 'links') {
                 await deleteLink(id);
+                setStats(prev => ({ ...prev, links: Math.max(0, prev.links - 1) }));
             } else if (activeTab === 'media') {
                 await deleteMediaImage(id, extra);
+                setStats(prev => ({ ...prev, media: Math.max(0, prev.media - 1) }));
             }
             fetchData(true);
-            fetchStats();
         } catch (err) {
             alert("Delete failed: " + err.message);
         } finally {
