@@ -15,13 +15,14 @@ export const getGalleryImages = async () => {
 
 export const uploadGalleryImage = async (file, title, category) => {
     const fileExt = file.name.split('.').pop();
-    const fileName = `${Math.random()}.${fileExt}`;
+    const cleanName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '');
+    const fileName = `${Date.now()}-${cleanName}`;
     const filePath = `gallery/${fileName}`;
 
     // 1. Upload to Storage
     const { error: uploadError } = await supabase.storage
         .from('assets')
-        .upload(filePath, file);
+        .upload(filePath, file, { cacheControl: '3600', upsert: true });
 
     if (uploadError) throw uploadError;
 
@@ -71,10 +72,31 @@ export const getToppers = async () => {
     return data;
 };
 
-export const addTopper = async (name, score, image) => {
+export const uploadTopperImage = async (file) => {
+    const fileExt = file.name.split('.').pop();
+    const cleanName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '');
+    const fileName = `${Date.now()}-${cleanName}`;
+    const filePath = `toppers/${fileName}`;
+
+    const { error: uploadError } = await supabase.storage
+        .from('assets')
+        .upload(filePath, file, { cacheControl: '3600', upsert: true });
+
+    if (uploadError) throw uploadError;
+
+    const { data: { publicUrl } } = supabase.storage
+        .from('assets')
+        .getPublicUrl(filePath);
+
+    return publicUrl;
+};
+
+export const addTopper = async (name, score, file) => {
+    const publicUrl = await uploadTopperImage(file);
+
     const { data, error } = await supabase
         .from('toppers')
-        .insert([{ name, score, image }])
+        .insert([{ name, score, image: publicUrl }])
         .select();
 
     if (error) throw error;
@@ -169,13 +191,14 @@ export const getMediaCoverage = async () => {
 
 export const uploadMediaImage = async (file, title) => {
     const fileExt = file.name.split('.').pop();
-    const fileName = `${Math.random()}.${fileExt}`;
+    const cleanName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '');
+    const fileName = `${Date.now()}-${cleanName}`;
     const filePath = `media/${fileName}`;
 
     // 1. Upload to Storage
     const { error: uploadError } = await supabase.storage
         .from('assets')
-        .upload(filePath, file);
+        .upload(filePath, file, { cacheControl: '3600', upsert: true });
 
     if (uploadError) throw uploadError;
 

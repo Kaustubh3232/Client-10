@@ -33,6 +33,40 @@ import {
     deleteMediaImage
 } from '../../services/supabaseService';
 
+const ImageDropzone = ({ id, file, onChange, label = "Upload Image" }) => {
+    return (
+        <div>
+            <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 block mb-2">{label}</label>
+            <div
+                className={`w-full p-6 border-2 border-dashed rounded-2xl flex flex-col items-center justify-center gap-3 cursor-pointer transition-colors ${file ? 'border-emerald-500 bg-emerald-50' : 'border-gray-200 bg-gray-50 hover:bg-gray-100 hover:border-gray-300'}`}
+                onDragOver={e => { e.preventDefault(); e.stopPropagation(); }}
+                onDrop={e => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                        onChange(e.dataTransfer.files[0]);
+                    }
+                }}
+            >
+                <input
+                    type="file"
+                    required
+                    accept="image/*"
+                    className="hidden"
+                    id={id}
+                    onChange={e => onChange(e.target.files[0])}
+                />
+                <label htmlFor={id} className="cursor-pointer flex flex-col items-center gap-2">
+                    <Upload size={24} className={file ? "text-emerald-600" : "text-gray-400"} />
+                    <span className={`text-xs font-bold ${file ? 'text-emerald-700' : 'text-gray-500'}`}>
+                        {file ? file.name : 'Drag & drop or browse...'}
+                    </span>
+                </label>
+            </div>
+        </div>
+    );
+};
+
 const AdminDashboard = () => {
     const [activeTab, setActiveTab] = useState('overview');
     const { user } = useUser();
@@ -347,10 +381,20 @@ const AdminDashboard = () => {
 
                     {!loading && activeTab === 'gallery' && (
                         <div className="space-y-8">
-                            <label className="block border-2 border-dashed border-gray-200 rounded-3xl p-12 text-center hover:border-[var(--color-brand-gold)] transition-colors cursor-pointer group">
+                            <label
+                                className="block border-2 border-dashed border-gray-200 rounded-3xl p-12 text-center hover:border-[var(--color-brand-gold)] transition-colors cursor-pointer group"
+                                onDragOver={e => { e.preventDefault(); e.stopPropagation(); }}
+                                onDrop={e => {
+                                    e.preventDefault(); e.stopPropagation();
+                                    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                                        const syntheticEvent = { target: { files: e.dataTransfer.files } };
+                                        handleUpload(syntheticEvent);
+                                    }
+                                }}
+                            >
                                 <input type="file" className="hidden" onChange={handleUpload} accept="image/*" />
                                 <Upload className="mx-auto mb-4 text-gray-400 group-hover:text-[var(--color-brand-gold)]" size={48} />
-                                <p className="font-bold text-gray-600">Click to upload new photos</p>
+                                <p className="font-bold text-gray-600">Click or drag to upload new photos</p>
                                 <p className="text-sm text-gray-400 mt-2">Will be uploaded to Supabase Storage</p>
                             </label>
 
@@ -563,16 +607,12 @@ const AdminDashboard = () => {
                                                 onChange={e => setFormData({ ...formData, score: e.target.value })}
                                             />
                                         </div>
-                                        <div>
-                                            <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 block mb-2">Image URL</label>
-                                            <input
-                                                type="url"
-                                                required
-                                                className="w-full p-4 bg-gray-50 rounded-2xl border border-gray-100 focus:border-emerald-500 outline-none font-bold"
-                                                value={formData.image}
-                                                onChange={e => setFormData({ ...formData, image: e.target.value })}
-                                            />
-                                        </div>
+                                        <ImageDropzone
+                                            id="topper-file"
+                                            label="Student Photo"
+                                            file={formData.file}
+                                            onChange={file => setFormData(p => ({ ...p, file }))}
+                                        />
                                     </>
                                 )}
 
@@ -623,25 +663,12 @@ const AdminDashboard = () => {
                                                 onChange={e => setFormData({ ...formData, title: e.target.value })}
                                             />
                                         </div>
-                                        <div>
-                                            <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 block mb-2">Select Image</label>
-                                            <input
-                                                type="file"
-                                                required
-                                                accept="image/*"
-                                                className="hidden"
-                                                id="media-file"
-                                                onChange={e => setFormData({ ...formData, file: e.target.files[0] })}
-                                            />
-                                            <label htmlFor="media-file" className="block w-full p-4 bg-gray-50 rounded-2xl border border-gray-100 cursor-pointer hover:bg-gray-100 transition-colors">
-                                                <div className="flex items-center gap-3">
-                                                    <Upload size={18} className="text-[#064e3b]" />
-                                                    <span className="text-xs font-bold text-gray-500">
-                                                        {formData.file ? formData.file.name : 'Choose press snippet...'}
-                                                    </span>
-                                                </div>
-                                            </label>
-                                        </div>
+                                        <ImageDropzone
+                                            id="media-file"
+                                            label="Select Image"
+                                            file={formData.file}
+                                            onChange={file => setFormData(p => ({ ...p, file }))}
+                                        />
                                     </>
                                 )}
 
